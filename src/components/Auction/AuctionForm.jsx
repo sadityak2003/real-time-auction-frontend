@@ -23,28 +23,33 @@ const AuctionForm = () => {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
-    try {
-      const data = await apiFetch('/auctions', {
-        method: 'POST',
-        body: JSON.stringify({
-          ...formData,
-          startingPrice: parseFloat(formData.startingPrice),
-          bidIncrement: parseFloat(formData.bidIncrement),
-          duration: parseInt(formData.duration) // This now correctly sends minutes
-        })
-      });
+  try {
+    const localDate = new Date(formData.startTime); // local from datetime-local
+    const utcDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
 
-      navigate(`/auction/${data.id}`);
-    } catch (error) {
-      setError(error.message || 'Failed to create auction');
-    } finally {
-      setLoading(false);
-    }
-  };
+    const data = await apiFetch('/auctions', {
+      method: 'POST',
+      body: JSON.stringify({
+        ...formData,
+        startingPrice: parseFloat(formData.startingPrice),
+        bidIncrement: parseFloat(formData.bidIncrement),
+        duration: parseInt(formData.duration),
+        startTime: utcDate.toISOString() // ✅ always UTC
+      })
+    });
+
+    navigate(`/auction/${data.id}`);
+  } catch (error) {
+    setError(error.message || 'Failed to create auction');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="auction-form-container">
