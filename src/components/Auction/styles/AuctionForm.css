@@ -1,0 +1,82 @@
+.auction-form-container {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+}
+
+.auction-form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.auction-form {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.auction-form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.auction-form-input,
+.auction-form-textarea,
+.auction-form-select {
+  width: 100%;
+  background-color: #e0e2e7;
+  color: #000;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  outline: none;
+  transition: 0.2s;
+}
+
+.auction-form-input:focus,
+.auction-form-textarea:focus,
+.auction-form-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.4);
+}
+
+.auction-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .auction-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.auction-form-error {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.auction-form-btn {
+  width: 100%;
+  background-color: #2563eb;
+  color: #fff;
+  padding: 0.75rem 0;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.auction-form-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.auction-form-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

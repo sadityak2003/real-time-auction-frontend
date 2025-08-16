@@ -1,0 +1,75 @@
+.bid-form-container {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+}
+
+.bid-form-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.bid-info {
+  margin-bottom: 1rem;
+}
+
+.bid-text {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.bid-value {
+  font-weight: 600;
+}
+
+.bid-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bid-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #2066d8;
+  margin-bottom: 0.5rem;
+}
+
+.bid-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+}
+
+.bid-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.5);
+}
+
+.bid-error {
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.bid-button {
+  width: 100%;
+  background-color: #16a34a;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.bid-button:hover:not(:disabled) {
+  background-color: #15803d;
+}
+
+.bid-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -1,0 +1,117 @@
+/* Card container */
+.auction-card {
+  background-color: #fff;
+  border-radius: 0.5rem; /* rounded-lg */
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* shadow-md */
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.auction-card:hover {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* hover:shadow-lg */
+}
+
+/* Card content */
+.auction-card-content {
+  padding: 1.5rem; /* p-6 */
+}
+
+/* Header */
+.auction-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+.auction-card-title {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600; /* font-semibold */
+  color: #111827; /* text-gray-900 */
+}
+
+/* Description */
+.auction-card-description {
+  color: #4b5563; /* text-gray-600 */
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* line-clamp-2 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Info section */
+.auction-card-info {
+  margin-bottom: 1rem;
+}
+
+.auction-card-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.auction-card-label {
+  color: #6b7280; /* text-gray-500 */
+}
+
+.auction-card-value {
+  font-weight: 600;
+}
+
+/* Status badges */
+.badge {
+  font-size: 0.75rem; /* text-xs */
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.badge-completed {
+  background-color: #d1fae5; /* bg-green-100 */
+  color: #065f46; /* text-green-800 */
+}
+
+.badge-ended {
+  background-color: #fee2e2; /* bg-red-100 */
+  color: #991b1b; /* text-red-800 */
+}
+
+.badge-live {
+  background-color: #d1fae5; /* bg-green-100 */
+  color: #065f46; /* text-green-800 */
+}
+
+.badge-upcoming {
+  background-color: #f3f4f6; /* bg-gray-100 */
+  color: #1f2937; /* text-gray-800 */
+}
+
+/* Timer */
+.auction-card-timer {
+    color: #111827;
+  margin-bottom: 1rem;
+}
+
+/* Footer */
+.auction-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.auction-card-date {
+  font-size: 0.875rem; /* text-sm */
+  color: #6b7280; /* text-gray-500 */
+}
+
+.auction-card-btn {
+  background-color: #2563eb; /* bg-blue-600 */
+  color: #fff;
+  padding: 0.5rem 1rem; /* px-4 py-2 */
+  border-radius: 0.5rem; /* rounded-lg */
+  transition: background-color 0.2s;
+}
+
+.auction-card-btn:hover {
+  background-color: #1d4ed8; /* hover:bg-blue-700 */
+}

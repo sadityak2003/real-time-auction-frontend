@@ -1,0 +1,10 @@
+.layout-container {
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+.layout-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
