@@ -5,22 +5,34 @@ import Timer from '../Common/Timer';
 import './styles/AuctionCard.css'; 
 
 const AuctionCard = ({ auction }) => {
+  const now = new Date();
+  const startTime = new Date(auction.startTime);
+  const endTime = new Date(auction.endTime);
+
   const isActive = () => {
-    const now = new Date();
-    return now >= new Date(auction.startTime) && now <= new Date(auction.endTime);
+    return now >= startTime && now <= endTime;
+  };
+
+  const hasEnded = () => {
+    return now > endTime;
+  };
+
+  const hasStarted = () => {
+    return now >= startTime;
   };
 
   const getStatusBadge = () => {
     if (auction.status === 'completed') {
       return <span className="badge badge-completed">Completed</span>;
     }
-    if (auction.status === 'ended') {
+    if (hasEnded() || auction.status === 'ended') {
       return <span className="badge badge-ended">Ended</span>;
     }
     if (isActive()) {
       return <span className="badge badge-live">Live</span>;
     }
-    return <span className="badge badge-upcoming">Ended</span>;
+    // If auction hasn't started yet
+    return <span className="badge badge-upcoming">Upcoming</span>;
   };
 
   return (
@@ -54,10 +66,17 @@ const AuctionCard = ({ auction }) => {
           </div>
         )}
 
+        {!hasStarted() && (
+          <div className="auction-card-countdown">
+            <span>Starts in: </span>
+            <Timer endTime={auction.startTime} />
+          </div>
+        )}
+
         <div className="auction-card-footer">
           <span className="auction-card-date">
-            {isActive() ? 'Ends: ' : 'Starts: '}
-            {formatDate(isActive() ? auction.endTime : auction.startTime)}
+            {isActive() ? 'Ends: ' : hasStarted() ? 'Ended: ' : 'Starts: '}
+            {formatDate(isActive() ? auction.endTime : hasStarted() ? auction.endTime : auction.startTime)}
           </span>
           <Link
             to={`/auction/${auction.id}`}

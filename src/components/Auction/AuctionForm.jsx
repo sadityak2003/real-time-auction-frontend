@@ -23,33 +23,41 @@ const AuctionForm = () => {
   }
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError('');
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
-  try {
-    const localDate = new Date(formData.startTime); // local from datetime-local
-    const utcDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
+    try {
+      const localDate = new Date(formData.startTime);
+      
+      console.log('Local time selected:', formData.startTime);
+      console.log('Local Date object:', localDate.toString());
+      console.log('UTC ISO string:', localDate.toISOString());
 
-    const data = await apiFetch('/auctions', {
-      method: 'POST',
-      body: JSON.stringify({
-        ...formData,
-        startingPrice: parseFloat(formData.startingPrice),
-        bidIncrement: parseFloat(formData.bidIncrement),
-        duration: parseInt(formData.duration),
-        startTime: utcDate.toISOString() // ✅ always UTC
-      })
-    });
+      const data = await apiFetch('/auctions', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...formData,
+          startingPrice: parseFloat(formData.startingPrice),
+          bidIncrement: parseFloat(formData.bidIncrement),
+          duration: parseInt(formData.duration),
+          startTime: localDate.toISOString() 
+        })
+      });
 
-    navigate(`/auction/${data.id}`);
-  } catch (error) {
-    setError(error.message || 'Failed to create auction');
-  } finally {
-    setLoading(false);
-  }
-};
+      navigate(`/auction/${data.id}`);
+    } catch (error) {
+      setError(error.message || 'Failed to create auction');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const getCurrentLocalDateTime = () => {
+    const now = new Date();
+    const localTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+    return localTime.toISOString().slice(0, 16);
+  };
 
   return (
     <div className="auction-form-container">
@@ -108,12 +116,12 @@ const AuctionForm = () => {
 
         <div className="auction-form-grid">
           <div>
-            <label className="auction-form-label">Start Time</label>
+            <label className="auction-form-label">Start Time (Local)</label>
             <input
               type="datetime-local"
               value={formData.startTime}
               onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-              min={new Date().toISOString().slice(0, 16)}
+              min={getCurrentLocalDateTime()}
               className="auction-form-input"
               required
             />

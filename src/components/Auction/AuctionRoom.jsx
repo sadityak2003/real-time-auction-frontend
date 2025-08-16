@@ -42,17 +42,24 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
     }
   }, [socket, auction.id]);
 
+  const now = new Date();
+  const startTime = new Date(auction.startTime);
+  const endTime = new Date(auction.endTime);
+
   const isActive = () => {
-    const now = new Date();
-    return now >= new Date(auction.startTime) && now <= new Date(auction.endTime);
+    return now >= startTime && now <= endTime;
+  };
+
+  const hasStarted = () => {
+    return now >= startTime;
+  };
+
+  const hasEnded = () => {
+    return now > endTime;
   };
 
   const isOwner = () => {
     return user && auction.sellerId === user.id;
-  };
-
-  const hasEnded = () => {
-    return new Date() > new Date(auction.endTime);
   };
 
   const handleAuctionEnd = () => {
@@ -72,6 +79,24 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
   const getHighestBid = () => {
     return bids.length > 0 ? bids[0] : null;
   };
+
+  const getAuctionStatus = () => {
+    if (auction.status === 'completed') {
+      return { message: '🎉 Auction completed!', class: 'auction-completed' };
+    }
+    if (auction.status === 'rejected') {
+      return { message: '❌ Auction rejected', class: 'auction-rejected' };
+    }
+    if (hasEnded()) {
+      return { message: 'Auction has ended', class: 'auction-ended' };
+    }
+    if (!hasStarted()) {
+      return { message: 'Auction has not started yet', class: 'auction-not-started' };
+    }
+    return null;
+  };
+
+  const statusInfo = getAuctionStatus();
 
   return (
     <div className="auction-room">
@@ -105,24 +130,29 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
         </div>
 
         {isActive() && (
-          <Timer endTime={auction.endTime} onEnd={handleAuctionEnd} />
-        )}
-
-        {hasEnded() && !isActive() && (
-          <div className="auction-ended">Auction has ended</div>
-        )}
-
-        {auction.status === 'completed' && (
-          <div className="auction-completed">
-            🎉 Auction completed! Winner: {getHighestBid()?.bidder?.username}
+          <div className="auction-timer">
+            <span>Ends in: </span>
+            <Timer endTime={auction.endTime} onEnd={handleAuctionEnd} />
           </div>
         )}
-        {auction.status === 'rejected' && (
-          <div className="auction-rejected">
-            ❌ Auction rejected
+
+        {!hasStarted() && (
+          <div className="auction-countdown">
+            <span>Starts in: </span>
+            <Timer endTime={auction.startTime} />
+          </div>
+        )}
+
+        {statusInfo && (
+          <div className={statusInfo.class}>
+            {statusInfo.message}
+            {auction.status === 'completed' && getHighestBid() && (
+              <span> Winner: {getHighestBid()?.bidder?.username}</span>
+            )}
           </div>
         )}
       </div>
+      
       <div className="auction-content">
         <div className="auction-bidding">
           {isActive() && user && !isOwner() && (
@@ -135,6 +165,12 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
 
           {isOwner() && isActive() && (
             <div className="auction-info">This is your auction. You cannot bid on your own items.</div>
+          )}
+
+          {!hasStarted() && (
+            <div className="auction-info">
+              Auction starts at {formatDate(auction.startTime)}
+            </div>
           )}
 
           {showSellerDecision && isOwner() && (
