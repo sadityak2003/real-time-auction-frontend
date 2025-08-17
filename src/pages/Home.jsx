@@ -10,6 +10,7 @@ const Home = () => {
   const { apiFetch } = useAuth();
 
   useEffect(() => {
+    setLoading(true);
     const fetchAuctions = async () => {
       try {
         const data = await apiFetch('/auctions');
@@ -43,8 +44,8 @@ const Home = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '64px' }}>
+        <div style={{ border: '4px solid transparent', borderTop: '4px solid blue', borderRadius: '50%', width: '24px', height: '24px', animation: 'spin 1s linear infinite' }}></div>
       </div>
     );
   }
