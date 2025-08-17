@@ -195,7 +195,7 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
           {isOwner() && (
           <div className="auction-actions">
             <button onClick={() => handleSellerDecision("cancelled")} className="btn-reject">
-              {auction.status === 'active' ? 'Cancel Auction' : 'Auction Cancelled'}
+              {auction.status === 'active' ? 'Cancel Auction' : 'Cancel Auction'}
             </button>
           </div>
         )}
