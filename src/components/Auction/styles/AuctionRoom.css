@@ -67,9 +67,27 @@
 }
 
 .auction-ended {
-  color: #dc2626;
+  color: #000000;
   font-weight: 600;
   font-size: 1.125rem;
+}
+
+.auction-rejected {
+  background: red;
+  border: 1px solid #f87171;
+  color: white;
+}
+
+.auction-cancelled {
+  background: yellow;
+  border: 1px solid #f87171;
+  color: #ffffff;
+}
+
+.auction-pending {
+  background: blue;
+  border: 1px solid #ffeeba;
+  color: #ffffff;
 }
 
 .auction-completed {

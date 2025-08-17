@@ -95,7 +95,7 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
       return { message: "🎉 Auction completed!", class: "auction-completed" };
     }
     if (auction.status === "rejected") {
-      return { message: "❌ Auction Rejected", class: "auction-cancelled" };
+      return { message: "❌ Auction Rejected", class: "auction-rejected" };
     }
     if (auction.status === "counter_offer") {
       return { message: "⏳ Auction pending, Counter Offer: " + formatCurrency(auction.counterOfferPrice), class: "auction-pending" };
