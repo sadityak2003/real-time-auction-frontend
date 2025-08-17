@@ -25,6 +25,12 @@ const AuctionCard = ({ auction }) => {
     if (auction.status === 'completed') {
       return <span className="badge badge-completed">Completed</span>;
     }
+    if (auction.status === 'rejected') {
+      return <span className="badge badge-rejected">Rejected</span>;
+    }
+    if (auction.status === 'counter_offer') {
+      return <span className="badge badge-counter_offer">Counter Offer</span>;
+    }
     if (hasEnded() || auction.status === 'ended') {
       return <span className="badge badge-ended">Ended</span>;
     }

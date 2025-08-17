@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import BidForm from './BidForm';
-import Timer from '../Common/Timer';
-import { formatCurrency, formatDate } from '../../utils/formatter';
-import { api } from '../../utils/api';
-import './styles/AuctionRoom.css'; 
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
+import BidForm from "./BidForm";
+import Timer from "../Common/Timer";
+import { formatCurrency, formatDate } from "../../utils/formatter";
+import { api } from "../../utils/api";
+import "./styles/AuctionRoom.css";
 
 const AuctionRoom = ({ auction: initialAuction, socket }) => {
   const { user } = useAuth();
@@ -14,30 +14,38 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('newBid', (data) => {
+      socket.on("newBid", (data) => {
         if (data.auctionId === auction.id) {
-          setAuction(prev => ({
+          setAuction((prev) => ({
             ...prev,
-            currentBid: data.currentBid
+            currentBid: data.currentBid,
           }));
-          setBids(prev => [data.bid, ...prev]);
+          setBids((prev) => [data.bid, ...prev]);
         }
       });
 
-      socket.on('sellerDecision', (data) => {
+      socket.on("sellerDecision", (data) => {
         if (data.auctionId === auction.id) {
-          setAuction(prev => ({
+          setAuction((prev) => ({
             ...prev,
             sellerDecision: data.decision,
-            status: data.decision === 'accepted' ? 'completed' : prev.status
+            status:
+              data.decision === "accepted"
+                ? "completed"
+                : data.decision === "rejected"
+                ? "rejected"
+                : data.decision === "counter_offer"
+                ? "counter_offer"
+                : prev.status,
+            counterOfferPrice: data.counterOfferPrice || prev.counterOfferPrice,
           }));
           setShowSellerDecision(false);
         }
       });
 
       return () => {
-        socket.off('newBid');
-        socket.off('sellerDecision');
+        socket.off("newBid");
+        socket.off("sellerDecision");
       };
     }
   }, [socket, auction.id]);
@@ -72,7 +80,7 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
     try {
       await api.post(`/auctions/${auction.id}/decision`, { decision });
     } catch (error) {
-      console.error('Failed to make decision:', error);
+      console.error("Failed to make decision:", error);
     }
   };
 
@@ -81,17 +89,23 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
   };
 
   const getAuctionStatus = () => {
-    if (auction.status === 'completed') {
-      return { message: '🎉 Auction completed!', class: 'auction-completed' };
+    if (auction.status === "completed") {
+      return { message: "🎉 Auction completed!", class: "auction-completed" };
     }
-    if (auction.status === 'rejected') {
-      return { message: '❌ Auction rejected', class: 'auction-rejected' };
+    if (auction.status === "rejected") {
+      return { message: "❌ Auction Rejected", class: "auction-cancelled" };
+    }
+    if (auction.status === "counter_offer") {
+      return { message: "⏳ Auction pending, Counter Offer: " + formatCurrency(auction.counterOfferPrice), class: "auction-pending" };
     }
     if (hasEnded()) {
-      return { message: 'Auction has ended', class: 'auction-ended' };
+      return { message: "Auction has ended", class: "auction-ended" };
     }
     if (!hasStarted()) {
-      return { message: 'Auction has not started yet', class: 'auction-not-started' };
+      return {
+        message: "Auction has not started yet",
+        class: "auction-not-started",
+      };
     }
     return null;
   };
@@ -107,7 +121,9 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
             <p className="auction-seller">by {auction.seller?.username}</p>
           </div>
           <div className="auction-bid-summary">
-            <div className="auction-current-bid">{formatCurrency(auction.currentBid)}</div>
+            <div className="auction-current-bid">
+              {formatCurrency(auction.currentBid)}
+            </div>
             <div className="auction-current-bid-label">Current Bid</div>
           </div>
         </div>
@@ -117,11 +133,15 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
         <div className="auction-stats">
           <div>
             <div className="auction-stat-label">Starting Price</div>
-            <div className="auction-stat-value">{formatCurrency(auction.startingPrice)}</div>
+            <div className="auction-stat-value">
+              {formatCurrency(auction.startingPrice)}
+            </div>
           </div>
           <div>
             <div className="auction-stat-label">Bid Increment</div>
-            <div className="auction-stat-value">{formatCurrency(auction.bidIncrement)}</div>
+            <div className="auction-stat-value">
+              {formatCurrency(auction.bidIncrement)}
+            </div>
           </div>
           <div>
             <div className="auction-stat-label">Total Bids</div>
@@ -146,25 +166,25 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
         {statusInfo && (
           <div className={statusInfo.class}>
             {statusInfo.message}
-            {auction.status === 'completed' && getHighestBid() && (
+            {auction.status === "completed" && getHighestBid() && (
               <span> Winner: {getHighestBid()?.bidder?.username}</span>
             )}
           </div>
         )}
       </div>
-      
+
       <div className="auction-content">
         <div className="auction-bidding">
-          {isActive() && user && !isOwner() && (
-            <BidForm auction={auction} />
-          )}
+          {isActive() && user && !isOwner() && <BidForm auction={auction} />}
 
           {!user && isActive() && (
             <div className="auction-warning">Please log in to place a bid.</div>
           )}
 
           {isOwner() && isActive() && (
-            <div className="auction-info">This is your auction. You cannot bid on your own items.</div>
+            <div className="auction-info">
+              This is your auction. You cannot bid on your own items.
+            </div>
           )}
 
           {!hasStarted() && (
@@ -177,38 +197,56 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
             <div className="seller-decision-panel">
               <h3 className="seller-decision-title">Make Your Decision</h3>
               <p className="seller-decision-subtitle">
-                Highest bid: {formatCurrency(auction.currentBid)} by {getHighestBid()?.bidder?.username}
+                Highest bid: {formatCurrency(auction.currentBid)} by{" "}
+                {getHighestBid()?.bidder?.username}
               </p>
               <div className="seller-decision-actions">
-                <button onClick={() => handleSellerDecision('accepted')} className="btn-accept">Accept</button>
-                <button onClick={() => handleSellerDecision('rejected')} className="btn-reject">Reject</button>
-                <button onClick={() => handleSellerDecision('counter_offer')} className="btn-counter">Counter Offer</button>
+                <button
+                  onClick={() => handleSellerDecision("accepted")}
+                  className="btn-accept"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => handleSellerDecision("rejected")}
+                  className="btn-reject"
+                >
+                  Reject
+                </button>
+                <button
+                  onClick={() => handleSellerDecision("counter_offer")}
+                  className="btn-counter"
+                >
+                  Counter Offer
+                </button>
               </div>
             </div>
           )}
         </div>
       </div>
 
-       <div className="auction-history">
-          <div className="auction-card">
-            <h3 className="auction-history-title">Bid History</h3>
-            <div className="auction-history-list">
-              {bids.length > 0 ? (
-                bids.map((bid) => (
-                  <div key={bid.id} className="bid-item">
-                    <div>
-                      <div className="bid-amount">{formatCurrency(bid.amount)}</div>
-                      <div className="bidder-name">{bid.bidder?.username}</div>
+      <div className="auction-history">
+        <div className="auction-card">
+          <h3 className="auction-history-title">Bid History</h3>
+          <div className="auction-history-list">
+            {bids.length > 0 ? (
+              bids.map((bid) => (
+                <div key={bid.id} className="bid-item">
+                  <div>
+                    <div className="bid-amount">
+                      {formatCurrency(bid.amount)}
                     </div>
-                    <div className="bid-time">{formatDate(bid.createdAt)}</div>
+                    <div className="bidder-name">{bid.bidder?.username}</div>
                   </div>
-                ))
-              ) : (
-                <div className="no-bids">No bids yet</div>
-              )}
-            </div>
+                  <div className="bid-time">{formatDate(bid.createdAt)}</div>
+                </div>
+              ))
+            ) : (
+              <div className="no-bids">No bids yet</div>
+            )}
           </div>
         </div>
+      </div>
     </div>
   );
 };
