@@ -36,6 +36,8 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
                 ? "rejected"
                 : data.decision === "counter_offer"
                 ? "counter_offer"
+                : data.decision === "cancelled"
+                ? "cancelled"
                 : prev.status,
             counterOfferPrice: data.counterOfferPrice || prev.counterOfferPrice,
           }));
@@ -97,6 +99,9 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
     }
     if (auction.status === "counter_offer") {
       return { message: "⏳ Auction pending, Counter Offer: " + formatCurrency(auction.counterOfferPrice), class: "auction-pending" };
+    }
+    if (auction.status === "cancelled") {
+      return { message: "❌ Auction Cancelled", class: "auction-cancelled" };
     }
     if (hasEnded()) {
       return { message: "Auction has ended", class: "auction-ended" };
@@ -186,6 +191,14 @@ const AuctionRoom = ({ auction: initialAuction, socket }) => {
               This is your auction. You cannot bid on your own items.
             </div>
           )}
+
+          {isOwner() && (
+          <div className="auction-actions">
+            <button onClick={() => handleSellerDecision("cancelled")} className="btn-reject">
+              {auction.status === 'active' ? 'Cancel Auction' : 'Auction Cancelled'}
+            </button>
+          </div>
+        )}
 
           {!hasStarted() && (
             <div className="auction-info">
