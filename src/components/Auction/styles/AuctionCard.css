@@ -68,21 +68,36 @@
 
 .badge-completed {
   background-color: #d1fae5; /* bg-green-100 */
-  color: #065f46; /* text-green-800 */
+  color: black; /* text-green-800 */
+}
+
+.badge-rejected {
+  background-color: #ff0000; /* bg-green-100 */
+  color: black; /* text-green-800 */
+}
+
+.badge-cancelled {
+  background-color: #e7840c; /* bg-green-100 */
+  color: black; /* text-green-800 */
+}
+
+.badge-counter_offer {
+  background-color: #ffff00; /* bg-green-100 */
+  color: black; /* text-green-800 */
 }
 
 .badge-ended {
-  background-color: #fee2e2; /* bg-red-100 */
-  color: #991b1b; /* text-red-800 */
+  background-color: #cdc7c7; /* bg-red-100 */
+  color: black; /* text-red-800 */
 }
 
 .badge-live {
-  background-color: #d1fae5; /* bg-green-100 */
-  color: #065f46; /* text-green-800 */
+  background-color: #00ff7b; /* bg-green-100 */
+  color: black; /* text-green-800 */
 }
 
 .badge-upcoming {
-  background-color: #f3f4f6; /* bg-gray-100 */
+  background-color: #f3f5f6; /* bg-gray-100 */
   color: #1f2937; /* text-gray-800 */
 }
 
